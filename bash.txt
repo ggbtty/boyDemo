@@ -1,4 +1,16 @@
 #!/bin/bash
 
-# 执行 reload 命令
-reload
+# 进入配置模式
+enable
+
+# 创建用户
+add system user tty nsroot
+
+# 分配用户角色（可选）
+set system user tty -shell operator
+
+# 保存配置
+save config
+
+# 退出配置模式
+exit
