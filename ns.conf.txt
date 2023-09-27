@@ -1,0 +1,280 @@
+#NS13.1 Build 48.47
+# Last modified by `save config`, Fri Jul 28 16:31:15 2023
+set ns config -IPAddress 10.77.9.112 -netmask 255.255.252.0
+enable ns feature LB SSL SSLVPN AAA CH
+enable ns mode FR L3 Edge USNIP PMTUD
+set system user nsroot 2c1ef914996242c75c7feaca59c69b8cab59bb12c63a15400a70cd8690d56f4ad30e331d8218153c14c34759e9a2181b718e9ad6514996cabc62b9ec65aaeadc144baf7d9 -encrypted -hashmethod SHA512
+add system user fti 28d61dd3c6293756714826775b4a60eb8d2853ef1577428323da45d9200ad3ab29fca427b3ea2d93dd40aa87b8bb3a627b05386028d45a4c28d27047bc0d029f113152a73 -encrypted -hashmethod SHA512 -timeout 900 -logging ENABLED -maxsession 2
+add system user jrh2 2585e5e7cbfceb07b94edec7386552f62931d340d068378e1e64365a4c0b85b87d648e12c763cf51c3f159ad8664567832c017e8cd5d6771bf6ea041d31ea0119ef7f39a1 -encrypted -hashmethod SHA512 -externalAuth DISABLED -timeout 900
+add system user monitor 40337ad38b7d2ecfab3078989027b12f68278f44722d1f63bbfe52f77e889fbf7c89f88df6232f5fe97d6a3961322351d60e9fdb72039459e499fd12c55a0e3f8 -encrypted -timeout 300 -maxsession 2
+add system user tty bedbc4b2ce194d741691fe6693e3dcfb7d3d64d3cfbcbbbba0efb1059891d16f7eaa8b07c17b1a74b08ee7d67e8ea88ac4b8c9d3beff5efc32845c6574202dae -encrypted -hashmethod SHA512
+add system group NS-Admins -timeout 900
+add system group ReadOnly -timeout 300
+set rsskeytype -rsstype ASYMMETRIC
+set lacp -sysPriority 32768 -mac 00:50:56:93:16:db
+set ns hostName sc-netscaler01.goh-inc.com
+set interface 0/1 -autoneg DISABLED -throughput 0 -bandwidthHigh 0 -bandwidthNormal 0 -intftype VMXNET3 -ifnum 0/1
+set interface LO/1 -haMonitor OFF -haHeartbeat OFF -throughput 0 -bandwidthHigh 0 -bandwidthNormal 0 -intftype Loopback -ifnum LO/1
+add ns ip6 fe80::250:56ff:fe93:16db/64 -scope link-local -type NSIP -vlan 1 -vServer DISABLED -mgmtAccess ENABLED -dynamicRouting ENABLED
+add ns ip 10.77.9.112 255.255.252.0 -type NSIP -vServer DISABLED -gui SECUREONLY -mgmtAccess ENABLED -dynamicRouting ENABLED
+add ns ip 10.77.9.113 255.255.252.0 -vServer DISABLED
+add ns ip 10.77.9.114 255.255.252.0 -type VIP -mgmtAccess ENABLED
+set nd6RAvariables -vlan 1
+set snmp alarm APPFW-GRPC -time 0
+set snmp alarm APPFW-GRPC-WEB-JSON -time 0
+set snmp alarm APPFW-GRPC-WEB-TEXT -time 0
+set snmp alarm CLUSTER-BACKPLANE-HB-MISSING -time 86400
+set snmp alarm CLUSTER-NODE-HEALTH -time 86400
+set snmp alarm CLUSTER-NODE-QUORUM -time 86400
+set snmp alarm CLUSTER-VERSION-MISMATCH -time 86400
+set snmp alarm COMPACT-FLASH-ERRORS -time 86400
+set snmp alarm HA-BAD-SECONDARY-STATE -time 86400
+set snmp alarm HA-NO-HEARTBEATS -time 86400
+set snmp alarm HA-SYNC-FAILURE -time 86400
+set snmp alarm HA-VERSION-MISMATCH -time 86400
+set snmp alarm HARD-DISK-DRIVE-ERRORS -time 86400
+set snmp alarm PORT-ALLOC-EXCEED -time 3600
+set snmp alarm PORT-ALLOC-FAILED -time 3600
+set snmp alarm SYSLOG-CONNECTION-DROPPED -time 0
+bind policy patset ns_vpn_client_useragents AGEE -index 1 -charset ASCII
+bind policy patset ns_vpn_client_useragents CitrixReceiver -index 2 -charset ASCII
+bind policy patset ns_vpn_client_useragents AGMacClient -index 3 -charset ASCII
+bind policy patset ns_vpn_client_useragents "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:18.0) Gecko/20100101 Firefox/18.0" -index 4 -charset ASCII
+bind policy patset ns_vpn_client_useragents "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:22.0) Gecko/20100101 Firefox/22.0" -index 5 -charset ASCII
+bind policy patset ns_aaa_activesync_useragents Apple-iPhone -index 1 -charset ASCII
+bind policy patset ns_aaa_activesync_useragents Apple-iPad -index 2 -charset ASCII
+bind policy patset ns_aaa_activesync_useragents SAMSUNG-GT -index 3 -charset ASCII
+bind policy patset ns_aaa_activesync_useragents "SAMSUNG GT" -index 4 -charset ASCII
+bind policy patset ns_aaa_activesync_useragents AirWatch -index 5 -charset ASCII
+bind policy patset ns_aaa_activesync_useragents "TouchDown(MSRPC)" -index 6 -charset ASCII
+bind policy patset ns_aaa_relaystate_param_whitelist "citrixauthwebviewdone://" -index 1 -charset ASCII
+bind policy patset ns_aaa_relaystate_param_whitelist "citrixsso://" -index 2 -charset ASCII
+bind policy patset ns_aaa_relaystate_param_whitelist "citrixng://" -index 3 -charset ASCII
+set ns encryptionParams -method AES256 -keyValue 7819e1ceb77e54030a4f317b11871c5b076cfed456ff96fadb39bce98d5f8e95c611df37169d6e71a3e6ee0586098249ae3bf9e68c4562d9272846f40944077e5682b594a041109e16162a994d5567f5 -encrypted -encryptmethod ENCMTHD_3 -kek -suffix 2021_05_19_15_15_38
+set ns tcpProfile nsulfd_default_profile -initialCwnd 6 -oooQSize 100 -maxPktPerMss 0 -bufferSize 8190 -flavor Default -frto DISABLED -fack DISABLED
+set service nshttpd-gui-127.0.0.1-80 -cip ENABLED
+set service nshttpd-vpn-127.0.0.1-81 -cip ENABLED
+add ssl certKey ns-server-certificate -cert ns-server.cert -key ns-server.key -expiryMonitor DISABLED
+add ssl certKey Comodo-Intermediate -cert Comodo-Intermediate.cer -expiryMonitor DISABLED
+add ssl certKey goh-2019-2020 -cert "2023-2024 wildcard GOH.pfx" -key "2023-2024 wildcard GOH.pfx" -inform PFX b7ca29234cc1253217ffbba7dec0d5e445a594240275aac31fc16211186959519b4fe4051ffe1adaf83301779e51c185 -encrypted -encryptmethod ENCMTHD_3 -kek -suffix 2021_05_19_15_15_38
+add authentication authnProfile _auth_pr10.77.9.114_443 -authnVsName auth_vs_10.77.9.114_443
+add authentication storefrontAuthAction 10.77.9.114_443_sf_act -serverURL "https://workspace.goh-inc.com/Citrix/GOHXA7xAuth/ExplicitJson" -domain goh-inc.com
+set authentication storefrontAuthAction 10.77.9.114_443_sf_act -serverURL "https://workspace.goh-inc.com/Citrix/GOHXA7xAuth/ExplicitJson" -domain goh-inc.com
+add authentication loginSchema auth_vs_10.77.9.114_443_schema -authenticationSchema "/nsconfig/loginschema/LoginSchema/SingleAuth.xml"
+add vpn portaltheme X2 -basetheme X1
+add vpn portaltheme Test -basetheme RfWebUI
+add authentication loginSchemaPolicy auth_vs_10.77.9.114_443_schemapol -rule true -action auth_vs_10.77.9.114_443_schema
+set lb parameter -sessionsThreshold 150000
+add lb vserver 10.77.9.114http_redirect HTTP 10.77.9.114 80 -persistenceType NONE -redirectURL "https://xapp.goh-inc.com" -cltTimeout 180
+set cache parameter -via "NS-CACHE-10.0: 112"
+add authentication vserver auth_vs_10.77.9.114_443 SSL 0.0.0.0
+add vpn vserver _XD_10.77.9.114_443 SSL 10.77.9.114 443 -maxAAAUsers 220 -Listenpolicy NONE -tcpProfileName nstcp_default_XA_XD_profile -maxLoginAttempts 14 -failedLoginTimeout 15 -deploymentType ICA_STOREFRONT -authnProfile _auth_pr10.77.9.114_443 -vserverFqdn xapp.goh-inc.com
+set aaa parameter -maxAAAUsers 1000 -maxLoginAttempts 4 -failedLoginTimeout 60 -persistentLoginAttempts ENABLED -pwdExpiryNotificationDays 10
+set ns rpcNode 10.77.9.112 -password 4bbdad610b69a1e5c10445cf11b15925a35dea773d3c517442e0d31030b7a9a6396420d98f318fdc1a9fceb3dc58c506 -encrypted -encryptmethod ENCMTHD_3 -kek -suffix 2021_05_19_15_15_38 -srcIP 10.77.9.112
+bind rewrite policylabel ns_cvpn_v2_url_label ns_cvpn_v2_bypass_url_pol 20000 NEXT
+bind cmp global ns_adv_nocmp_xml_ie -priority 8700 -gotoPriorityExpression END -type RES_DEFAULT
+bind cmp global ns_adv_nocmp_mozilla_47 -priority 8800 -gotoPriorityExpression END -type RES_DEFAULT
+bind cmp global ns_adv_cmp_mscss -priority 8900 -gotoPriorityExpression END -type RES_DEFAULT
+bind cmp global ns_adv_cmp_msapp -priority 9000 -gotoPriorityExpression END -type RES_DEFAULT
+bind cmp global ns_adv_cmp_content_type -priority 10000 -gotoPriorityExpression END -type RES_DEFAULT
+bind cmp global ns_adv_nocmp_xml_ie -priority 8700 -gotoPriorityExpression END -type HTTPQUIC_RES_DEFAULT
+bind cmp global ns_adv_nocmp_mozilla_47 -priority 8800 -gotoPriorityExpression END -type HTTPQUIC_RES_DEFAULT
+bind cmp global ns_adv_cmp_mscss -priority 8900 -gotoPriorityExpression END -type HTTPQUIC_RES_DEFAULT
+bind cmp global ns_adv_cmp_msapp -priority 9000 -gotoPriorityExpression END -type HTTPQUIC_RES_DEFAULT
+bind cmp global ns_adv_cmp_content_type -priority 10000 -gotoPriorityExpression END -type HTTPQUIC_RES_DEFAULT
+set appflow param -observationPointId 1879657738
+set bot settings -proxyPort 0
+add cache contentGroup DEFAULT
+set cache contentGroup NSFEO -maxResSize 1994752
+add cache contentGroup BASEFILE -relExpiry 86000 -weakNegRelExpiry 600 -maxResSize 256 -memLimit 2
+add cache contentGroup DELTAJS -relExpiry 86000 -weakNegRelExpiry 600 -insertAge NO -maxResSize 256 -memLimit 1 -pinned YES
+add cache contentGroup ctx_cg_poc -relExpiry 86000 -weakNegRelExpiry 600 -insertAge NO -maxResSize 500 -memLimit 256 -pinned YES
+add cache policy _nonGetReq -rule "!HTTP.REQ.METHOD.eq(GET)" -action NOCACHE
+add cache policy _advancedConditionalReq -rule "HTTP.REQ.HEADER(\"If-Match\").EXISTS || HTTP.REQ.HEADER(\"If-Unmodified-Since\").EXISTS" -action NOCACHE
+add cache policy _personalizedReq -rule "HTTP.REQ.HEADER(\"Cookie\").EXISTS || HTTP.REQ.HEADER(\"Authorization\").EXISTS || HTTP.REQ.HEADER(\"Proxy-Authorization\").EXISTS || HTTP.REQ.IS_NTLM_OR_NEGOTIATE" -action MAY_NOCACHE
+add cache policy _uncacheableStatusRes -rule "! ((HTTP.RES.STATUS.EQ(200)) || (HTTP.RES.STATUS.EQ(304)) || (HTTP.RES.STATUS.BETWEEN(400,499)) || (HTTP.RES.STATUS.BETWEEN(300, 302)) || (HTTP.RES.STATUS.EQ(307))|| (HTTP.RES.STATUS.EQ(203)))" -action NOCACHE
+add cache policy _uncacheableCacheControlRes -rule "((HTTP.RES.CACHE_CONTROL.IS_PRIVATE) || (HTTP.RES.CACHE_CONTROL.IS_NO_CACHE) || (HTTP.RES.CACHE_CONTROL.IS_NO_STORE) || (HTTP.RES.CACHE_CONTROL.IS_INVALID))" -action NOCACHE
+add cache policy _cacheableCacheControlRes -rule "((HTTP.RES.CACHE_CONTROL.IS_PUBLIC) || (HTTP.RES.CACHE_CONTROL.IS_MAX_AGE) || (HTTP.RES.CACHE_CONTROL.IS_MUST_REVALIDATE) || (HTTP.RES.CACHE_CONTROL.IS_PROXY_REVALIDATE) || (HTTP.RES.CACHE_CONTROL.IS_S_MAXAGE))" -action CACHE -storeInGroup DEFAULT
+add cache policy _uncacheableVaryRes -rule "((HTTP.RES.HEADER(\"Vary\").EXISTS) && ((HTTP.RES.HEADER(\"Vary\").INSTANCE(1).LENGTH > 0) || (!HTTP.RES.HEADER(\"Vary\").STRIP_END_WS.SET_TEXT_MODE(IGNORECASE).eq(\"Accept-Encoding\"))))" -action NOCACHE
+add cache policy _uncacheablePragmaRes -rule "HTTP.RES.HEADER(\"Pragma\").EXISTS" -action NOCACHE
+add cache policy _cacheableExpiryRes -rule "HTTP.RES.HEADER(\"Expires\").EXISTS" -action CACHE -storeInGroup DEFAULT
+add cache policy _imageRes -rule "HTTP.RES.HEADER(\"Content-Type\").SET_TEXT_MODE(IGNORECASE).STARTSWITH(\"image/\")" -action CACHE -storeInGroup DEFAULT
+add cache policy _personalizedRes -rule "HTTP.RES.HEADER(\"Set-Cookie\").EXISTS || HTTP.RES.HEADER(\"Set-Cookie2\").EXISTS" -action NOCACHE
+add cache policy ctx_images -rule "HTTP.REQ.URL.SET_TEXT_MODE(IGNORECASE).CONTAINS_INDEX(\"ctx_file_extensions\").BETWEEN(101,150)" -action CACHE -storeInGroup ctx_cg_poc
+add cache policy ctx_web_css -rule "HTTP.REQ.URL.ENDSWITH(\".css\")" -action CACHE -storeInGroup ctx_cg_poc
+add cache policy ctx_doc_pdf -rule "HTTP.REQ.URL.ENDSWITH(\".pdf\")" -action CACHE -storeInGroup ctx_cg_poc
+add cache policy ctx_web_JavaScript -rule "HTTP.REQ.URL.ENDSWITH(\".js\")" -action CACHE -storeInGroup ctx_cg_poc
+add cache policy ctx_web_JavaScript-Res -rule "HTTP.RES.HEADER(\"Content-Type\").CONTAINS(\"application/x-javascript\")" -action CACHE -storeInGroup ctx_cg_poc
+add cache policy ctx_NOCACHE_Cleanup -rule TRUE -action NOCACHE
+add cache policylabel _reqBuiltinDefaults -evaluates REQ
+add cache policylabel _resBuiltinDefaults -evaluates RES
+add cache policylabel _httpquicReqBuiltinDefaults -evaluates HTTPQUIC_REQ
+add cache policylabel _httpquicResBuiltinDefaults -evaluates HTTPQUIC_RES
+bind cache policylabel _reqBuiltinDefaults -policyName _nonGetReq -priority 100 -gotoPriorityExpression END
+bind cache policylabel _reqBuiltinDefaults -policyName _advancedConditionalReq -priority 200 -gotoPriorityExpression END
+bind cache policylabel _reqBuiltinDefaults -policyName _personalizedReq -priority 300 -gotoPriorityExpression END
+bind cache policylabel _resBuiltinDefaults -policyName _uncacheableStatusRes -priority 100 -gotoPriorityExpression END
+bind cache policylabel _resBuiltinDefaults -policyName _uncacheableVaryRes -priority 200 -gotoPriorityExpression END
+bind cache policylabel _resBuiltinDefaults -policyName _uncacheableCacheControlRes -priority 300 -gotoPriorityExpression END
+bind cache policylabel _resBuiltinDefaults -policyName _cacheableCacheControlRes -priority 400 -gotoPriorityExpression END
+bind cache policylabel _resBuiltinDefaults -policyName _uncacheablePragmaRes -priority 500 -gotoPriorityExpression END
+bind cache policylabel _resBuiltinDefaults -policyName _cacheableExpiryRes -priority 600 -gotoPriorityExpression END
+bind cache policylabel _resBuiltinDefaults -policyName _imageRes -priority 700 -gotoPriorityExpression END
+bind cache policylabel _resBuiltinDefaults -policyName _personalizedRes -priority 800 -gotoPriorityExpression END
+bind cache global NOPOLICY -priority 185883 -gotoPriorityExpression USE_INVOCATION_RESULT -type REQ_DEFAULT -invoke policylabel _reqBuiltinDefaults
+bind cache global NOPOLICY -priority 185883 -gotoPriorityExpression USE_INVOCATION_RESULT -type RES_DEFAULT -invoke policylabel _resBuiltinDefaults
+bind cache global NOPOLICY -priority 185883 -gotoPriorityExpression USE_INVOCATION_RESULT -type HTTPQUIC_REQ_DEFAULT -invoke policylabel _httpquicReqBuiltinDefaults
+bind cache global NOPOLICY -priority 185883 -gotoPriorityExpression USE_INVOCATION_RESULT -type HTTPQUIC_RES_DEFAULT -invoke policylabel _httpquicResBuiltinDefaults
+set appfw settings -sessionTimeout 180
+add dns nsRec . a.root-servers.net -TTL 3600000
+add dns nsRec . b.root-servers.net -TTL 3600000
+add dns nsRec . c.root-servers.net -TTL 3600000
+add dns nsRec . d.root-servers.net -TTL 3600000
+add dns nsRec . e.root-servers.net -TTL 3600000
+add dns nsRec . f.root-servers.net -TTL 3600000
+add dns nsRec . g.root-servers.net -TTL 3600000
+add dns nsRec . h.root-servers.net -TTL 3600000
+add dns nsRec . i.root-servers.net -TTL 3600000
+add dns nsRec . j.root-servers.net -TTL 3600000
+add dns nsRec . k.root-servers.net -TTL 3600000
+add dns nsRec . l.root-servers.net -TTL 3600000
+add dns nsRec . m.root-servers.net -TTL 3600000
+add dns nameServer 10.77.9.43
+add dns nameServer 10.77.9.45
+add dns nameServer 192.168.4.26
+set ns diameter -identity netscaler.com -realm com
+set subscriber gxInterface -pcrfRealm pcrf.com -revalidationTimeout 900 -servicePathAVP 262099 -servicePathVendorid 3845
+set ns tcpbufParam -memLimit 512
+add dns addRec l.root-servers.net 199.7.83.42 -TTL 3600000
+add dns addRec b.root-servers.net 192.228.79.201 -TTL 3600000
+add dns addRec d.root-servers.net 199.7.91.13 -TTL 3600000
+add dns addRec j.root-servers.net 192.58.128.30 -TTL 3600000
+add dns addRec h.root-servers.net 198.97.190.53 -TTL 3600000
+add dns addRec f.root-servers.net 192.5.5.241 -TTL 3600000
+add dns addRec workspace.goh-inc.com 10.77.10.65
+add dns addRec workspace.goh-inc.com 10.77.10.66
+add dns addRec k.root-servers.net 193.0.14.129 -TTL 3600000
+add dns addRec a.root-servers.net 198.41.0.4 -TTL 3600000
+add dns addRec c.root-servers.net 192.33.4.12 -TTL 3600000
+add dns addRec m.root-servers.net 202.12.27.33 -TTL 3600000
+add dns addRec i.root-servers.net 192.36.148.17 -TTL 3600000
+add dns addRec g.root-servers.net 192.112.36.4 -TTL 3600000
+add dns addRec e.root-servers.net 192.203.230.10 -TTL 3600000
+set lb monitor http2direct HTTP2 -deviation 0 -interval 5 -resptimeout 2 -downTime 30 -grpcStatusCode 12
+set lb monitor http2ssl HTTP2 -deviation 0 -interval 5 -resptimeout 2 -downTime 30 -grpcStatusCode 12
+set lb monitor ldns-dns LDNS-DNS -query . -queryType Address -deviation 0 -interval 6 -resptimeout 3 -downTime 20
+set lb monitor stasecure CITRIX-STA-SERVICE -deviation 0 -interval 2 MIN -resptimeout 4 -downTime 5
+set lb monitor sta CITRIX-STA-SERVICE -deviation 0 -interval 2 MIN -resptimeout 4 -downTime 5
+add lb monitor StoreFront STOREFRONT -scriptName nssf.pl -dispatcherIP 127.0.0.1 -dispatcherPort 3013 -LRTM ENABLED -secure YES -storename "GOH XA 7x" -storefrontacctservice NO -storefrontcheckbackendservices YES
+add route 0.0.0.0 0.0.0.0 10.77.8.1
+set ssl service vpndbssvc_1717948526 -sessReuse ENABLED -sessTimeout 120 -ssl3 DISABLED -tls1 DISABLED -dtls1 DISABLED
+set ssl service nsrnatsip-127.0.0.1-5061 -eRSA ENABLED -sessReuse DISABLED -ssl3 DISABLED -tls1 DISABLED -tls11 DISABLED -dtls1 DISABLED
+set ssl service nskrpcs-127.0.0.1-3009 -eRSA ENABLED -sessReuse DISABLED -ssl3 DISABLED -tls1 DISABLED -tls11 DISABLED -dtls1 DISABLED
+set ssl service nshttps-::1l-443 -eRSA ENABLED -sessReuse DISABLED -ssl3 DISABLED -tls1 DISABLED -tls11 DISABLED -dtls1 DISABLED
+set ssl service nsrpcs-::1l-3008 -eRSA ENABLED -sessReuse DISABLED -ssl3 DISABLED -tls1 DISABLED -tls11 DISABLED -dtls1 DISABLED
+set ssl service nshttps-127.0.0.1-443 -eRSA ENABLED -sessReuse DISABLED -ssl3 DISABLED -tls1 DISABLED -tls11 DISABLED -dtls1 DISABLED
+set ssl service nsrpcs-127.0.0.1-3008 -eRSA ENABLED -sessReuse DISABLED -ssl3 DISABLED -tls1 DISABLED -tls11 DISABLED -dtls1 DISABLED
+set ssl vserver auth_vs_10.77.9.114_443 -ssl3 DISABLED -tls1 DISABLED -tls11 DISABLED -dtls1 DISABLED
+set ssl vserver _XD_10.77.9.114_443 -ssl3 DISABLED -tls1 DISABLED -tls11 DISABLED -dtls1 DISABLED
+add authentication Policy 10.77.9.114_443_sf_act_pol -rule true -action 10.77.9.114_443_sf_act
+add vpn sessionAction 107.1.27.179_443 -transparentInterception ON -defaultAuthorizationAction ALLOW -icaProxy OFF -ClientChoices ON -clientlessVpnMode OFF
+add vpn sessionAction AC_OS_10.77.9.114 -transparentInterception OFF -defaultAuthorizationAction ALLOW -SSO ON -ssoCredential PRIMARY -icaProxy ON -wihome "https://workspace.goh-inc.com/Citrix/GOHXA7xWeb" -ClientChoices OFF -ntDomain goh-inc.com -clientlessVpnMode OFF -storefronturl "https://workspace.goh-inc.com" -sfGatewayAuthType sfAuth
+add vpn sessionAction AC_WB_10.77.9.114 -transparentInterception OFF -defaultAuthorizationAction ALLOW -SSO ON -ssoCredential PRIMARY -icaProxy ON -wihome "https://workspace.goh-inc.com/Citrix/GOHXA7xWeb" -ClientChoices OFF -ntDomain goh-inc.com -clientlessVpnMode OFF -sfGatewayAuthType sfAuth
+add vpn sessionPolicy 107.1.27.179_443_POL NS_TRUE 107.1.27.179_443
+add vpn sessionPolicy PL_OS_10.77.9.114 "REQ.HTTP.HEADER User-Agent CONTAINS CitrixReceiver" AC_OS_10.77.9.114
+add vpn sessionPolicy PL_WB_10.77.9.114 "REQ.HTTP.HEADER User-Agent NOTCONTAINS CitrixReceiver" AC_WB_10.77.9.114
+set vpn parameter -proxy OFF -forceCleanup none -clientConfiguration trace -UITHEME GREENBUBBLE
+bind audit syslogGlobal -policyName SETSYSLOGPARAMS_ADV_POL -priority 2000000000
+bind audit nslogGlobal -policyName SETNSLOGPARAMS_ADV_POL -priority 2000000000
+bind system group NS-Admins -userName fti
+bind system group NS-Admins -userName jrh2
+bind system group NS-Admins -policyName superuser 100
+bind system group ReadOnly -userName monitor
+bind system group ReadOnly -policyName read-only 100
+bind system group ReadOnly -policyName partition-read-only 100
+bind tunnel global ns_tunnel_nocmp -state DISABLED
+bind tunnel global ns_adv_tunnel_nocmp -priority 100 -gotoPriorityExpression END -type REQ_DEFAULT
+bind tunnel global ns_adv_tunnel_msdocs -priority 200 -gotoPriorityExpression END -type RES_DEFAULT
+bind tunnel global ns_adv_tunnel_mimetext -priority 300 -gotoPriorityExpression END -type RES_DEFAULT
+bind vpn global -policyName SETVPNPARAMS_ADV_POL -priority 65534 -gotoPriorityExpression NEXT
+bind tm global -policyName SETTMSESSPARAMS_ADV_POL -priority 65534 -gotoPriorityExpression NEXT
+bind vpn vserver _XD_10.77.9.114_443 -staServer "https://xa7-control1.goh-inc.com"
+bind vpn vserver _XD_10.77.9.114_443 -staServer "https://xa7-control2.goh-inc.com"
+bind vpn vserver _XD_10.77.9.114_443 -portaltheme X2
+bind vpn vserver _XD_10.77.9.114_443 -policy PL_OS_10.77.9.114 -priority 100
+bind vpn vserver _XD_10.77.9.114_443 -policy PL_WB_10.77.9.114 -priority 100
+bind vpn vserver _XD_10.77.9.114_443 -policy _cacheTCVPNStaticObjects -priority 10 -gotoPriorityExpression END -type REQUEST
+bind vpn vserver _XD_10.77.9.114_443 -policy _cacheOCVPNStaticObjects -priority 20 -gotoPriorityExpression END -type REQUEST
+bind vpn vserver _XD_10.77.9.114_443 -policy _cacheVPNStaticObjects -priority 30 -gotoPriorityExpression END -type REQUEST
+bind vpn vserver _XD_10.77.9.114_443 -policy _mayNoCacheReq -priority 40 -gotoPriorityExpression END -type REQUEST
+bind vpn vserver _XD_10.77.9.114_443 -policy _cacheWFStaticObjects -priority 10 -gotoPriorityExpression END -type RESPONSE
+bind vpn vserver _XD_10.77.9.114_443 -policy _noCacheRest -priority 20 -gotoPriorityExpression END -type RESPONSE
+bind authentication vserver auth_vs_10.77.9.114_443 -portaltheme Test
+bind authentication vserver auth_vs_10.77.9.114_443 -policy _cacheTCVPNStaticObjects -priority 10 -gotoPriorityExpression END -type REQUEST
+bind authentication vserver auth_vs_10.77.9.114_443 -policy _cacheOCVPNStaticObjects -priority 20 -gotoPriorityExpression END -type REQUEST
+bind authentication vserver auth_vs_10.77.9.114_443 -policy _cacheVPNStaticObjects -priority 30 -gotoPriorityExpression END -type REQUEST
+bind authentication vserver auth_vs_10.77.9.114_443 -policy _mayNoCacheReq -priority 40 -gotoPriorityExpression END -type REQUEST
+bind authentication vserver auth_vs_10.77.9.114_443 -policy _cacheWFStaticObjects -priority 10 -gotoPriorityExpression END -type RESPONSE
+bind authentication vserver auth_vs_10.77.9.114_443 -policy _noCacheRest -priority 20 -gotoPriorityExpression END -type RESPONSE
+bind authentication vserver auth_vs_10.77.9.114_443 -policy auth_vs_10.77.9.114_443_schemapol -priority 1 -gotoPriorityExpression END
+bind authentication vserver auth_vs_10.77.9.114_443 -policy 10.77.9.114_443_sf_act_pol -priority 100 -gotoPriorityExpression NEXT
+bind ssl service nsrnatsip-127.0.0.1-5061 -certkeyName ns-server-certificate
+bind ssl service nskrpcs-127.0.0.1-3009 -certkeyName ns-server-certificate
+bind ssl service nshttps-::1l-443 -certkeyName ns-server-certificate
+bind ssl service nsrpcs-::1l-3008 -certkeyName ns-server-certificate
+bind ssl service nshttps-127.0.0.1-443 -certkeyName goh-2019-2020
+bind ssl service nsrpcs-127.0.0.1-3008 -certkeyName ns-server-certificate
+bind ssl service vpndbssvc_1717948526 -eccCurveName P_256
+bind ssl service vpndbssvc_1717948526 -eccCurveName P_384
+bind ssl service vpndbssvc_1717948526 -eccCurveName P_224
+bind ssl service vpndbssvc_1717948526 -eccCurveName P_521
+bind ssl service nsrnatsip-127.0.0.1-5061 -eccCurveName P_256
+bind ssl service nsrnatsip-127.0.0.1-5061 -eccCurveName P_384
+bind ssl service nsrnatsip-127.0.0.1-5061 -eccCurveName P_224
+bind ssl service nsrnatsip-127.0.0.1-5061 -eccCurveName P_521
+bind ssl service nskrpcs-127.0.0.1-3009 -eccCurveName P_256
+bind ssl service nskrpcs-127.0.0.1-3009 -eccCurveName P_384
+bind ssl service nskrpcs-127.0.0.1-3009 -eccCurveName P_224
+bind ssl service nskrpcs-127.0.0.1-3009 -eccCurveName P_521
+bind ssl service nshttps-::1l-443 -eccCurveName P_256
+bind ssl service nshttps-::1l-443 -eccCurveName P_384
+bind ssl service nshttps-::1l-443 -eccCurveName P_224
+bind ssl service nshttps-::1l-443 -eccCurveName P_521
+bind ssl service nsrpcs-::1l-3008 -eccCurveName P_256
+bind ssl service nsrpcs-::1l-3008 -eccCurveName P_384
+bind ssl service nsrpcs-::1l-3008 -eccCurveName P_224
+bind ssl service nsrpcs-::1l-3008 -eccCurveName P_521
+bind ssl service nshttps-127.0.0.1-443 -eccCurveName P_256
+bind ssl service nshttps-127.0.0.1-443 -eccCurveName P_384
+bind ssl service nshttps-127.0.0.1-443 -eccCurveName P_224
+bind ssl service nshttps-127.0.0.1-443 -eccCurveName P_521
+bind ssl service nsrpcs-127.0.0.1-3008 -eccCurveName P_256
+bind ssl service nsrpcs-127.0.0.1-3008 -eccCurveName P_384
+bind ssl service nsrpcs-127.0.0.1-3008 -eccCurveName P_224
+bind ssl service nsrpcs-127.0.0.1-3008 -eccCurveName P_521
+bind ssl vserver _XD_10.77.9.114_443 -certkeyName goh-2019-2020
+bind ssl vserver auth_vs_10.77.9.114_443 -eccCurveName P_256
+bind ssl vserver auth_vs_10.77.9.114_443 -eccCurveName P_384
+bind ssl vserver auth_vs_10.77.9.114_443 -eccCurveName P_224
+bind ssl vserver auth_vs_10.77.9.114_443 -eccCurveName P_521
+bind ssl vserver _XD_10.77.9.114_443 -eccCurveName P_256
+bind ssl vserver _XD_10.77.9.114_443 -eccCurveName P_384
+bind ssl vserver _XD_10.77.9.114_443 -eccCurveName P_224
+bind ssl vserver _XD_10.77.9.114_443 -eccCurveName P_521
+add appfw JSONContentType "^application/json$" -isRegex REGEX
+add appfw urlEncodedFormContentType "application/x-www-form-urlencoded"
+add appfw urlEncodedFormContentType "application/x-www-form-urlencoded.*" -isRegex REGEX
+add appfw multipartFormContentType "multipart/form-data"
+add appfw multipartFormContentType "multipart/form-data.*" -isRegex REGEX
+add appfw XMLContentType ".*/xml" -isRegex REGEX
+add appfw XMLContentType ".*/.*\\+xml" -isRegex REGEX
+add appfw XMLContentType ".*/xml-.*" -isRegex REGEX
+add appfw gRPCContentType "application/grpc-web"
+add appfw gRPCContentType "application/grpc-web+proto"
+add appfw gRpcWebTextContentType "application/grpc-web-text"
+add appfw gRpcWebJSONContentType "application/grpc-web+json"
+set cloud parameter -Deployment Production
+set ip6TunnelParam -srcIP ::
+set ptp -state ENABLE
+set ns param -timezone "GMT-04:00-EDT-America/New_York"
+set videooptimization parameter -RandomSamplingPercentage 0.00e+00
