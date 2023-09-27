@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# 执行 reload 命令
+reload
